@@ -8,8 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 import androidx.annotation.Nullable;
 
-import java.security.Key;
-
 public class bd extends SQLiteOpenHelper
 {
     private final Context context;
@@ -20,6 +18,7 @@ public class bd extends SQLiteOpenHelper
     private static final String ID = "id";
     private static String KEY = "key1";
     private static final String VALUE = "value";
+    SQLiteDatabase db = this.getReadableDatabase();
 
     public bd(@Nullable Context context) {
         super(context, DataBase_Name, null, DataBase_Version);
@@ -43,17 +42,42 @@ public class bd extends SQLiteOpenHelper
         onCreate(db);
     }
 
-    void search(String key)
+    public Cursor search(String key)
     {
-        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("Select value from " + Table_Name + " where " + KEY + " =?", new String[] {key});
+        return cursor;
+    }
 
-        Cursor cursor = db.rawQuery("Select VALUE from " + Table_Name + " where " + KEY + " = ?", new String[] {key});
-        if(cursor.getCount() == 0){
+    void add(String key, String value)
+    {
+        ContentValues cv =new ContentValues();
+
+        cv.put(KEY, key);
+        cv.put(VALUE, value);
+
+        long result = db.insert(Table_Name,null,cv);
+        if(result == -1)
+        {
             Toast.makeText(context,"Failed", Toast.LENGTH_SHORT).show();
         }
-        else{
-            Toast.makeText(context,"Ваш аккаунт есть", Toast.LENGTH_SHORT).show();
+        else
+        {
+            Toast.makeText(context,"Added Successfully", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public Boolean delete(String key)
+    {
+        Cursor cursor = db.rawQuery("Select * from " + Table_Name + " where " + KEY + " =?", new String[] {key});
+        if (cursor.getCount() > 0){
+            long result = db.delete(Table_Name, KEY + " =?",new String[]{key});
+            if(result == -1)
+                return false;
+            else
+                return true;
+        }
+        else
+            return false;
 
     }
 
