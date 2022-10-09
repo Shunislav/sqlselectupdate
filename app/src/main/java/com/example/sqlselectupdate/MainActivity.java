@@ -72,5 +72,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        buttonUpdate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String Key = textkey.getText().toString();
+                String Value = textvalue.getText().toString();
+
+                mbd.Upgr(Key,Value);
+            }
+        });
+
     }
 }

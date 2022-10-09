@@ -42,6 +42,17 @@ public class bd extends SQLiteOpenHelper
         onCreate(db);
     }
 
+    public void Upgr(String key, String NewValue)
+    {
+        ContentValues cv = new ContentValues();
+
+        cv.put(KEY, key);
+        cv.put(VALUE,NewValue);
+
+         db.update(Table_Name, cv, "key1 = ?", new String[]{key});
+
+    }
+
     public Cursor search(String key)
     {
         Cursor cursor = db.rawQuery("Select value from " + Table_Name + " where " + KEY + " =?", new String[] {key});
@@ -80,6 +91,8 @@ public class bd extends SQLiteOpenHelper
             return false;
 
     }
+
+
 
 
 }
